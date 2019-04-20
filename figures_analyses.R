@@ -117,13 +117,22 @@ for (j in 1:26) {
 names(liens_etudiants)[3]<-'sexe'
 mod.sexe<-lm(liens_etudiants$Freq~liens_etudiants$sexe)
 summary(mod.sexe)
-anova(mod.sexe)
+ano1<-anova(mod.sexe)
+#valeur de p pour légende avec 4 décimale
+pvalue1<-round(ano1[1,5],4)
+#ouvrir pdf
+pdf("graph.sexe.pdf",width = 6,height = 6) 
+# 2. creer graph
+plot(as.factor(liens_etudiants$sexe),liens_etudiants$Freq)
+legend('topright',legend =paste('P-value=',pvalue1))
+# fermer pdf
+dev.off()
 
 
 #ouvrir pdf
 pdf("graph_sexe.pdf",width = 6,height = 6) 
 # 2. créer graph
-plot(as.factor(liens_etudiants$sexe),liens_etudiants$Freq)
+plot(as.factor(liens_etudiants$sexe),liens_etudiants$Freq,ylab='Nombre de personnes différentes avec qui un étudiant collabore')
 legend('topright',legend = 'P-value=0,5783')
 # fermer pdf
 dev.off()
@@ -146,13 +155,15 @@ names(liens_region)[6]<-'meme_region'
 #Sans les liens de fréquence 0
 liens_region0<-subset(liens_region, liens_region$Freq>0)
 test_moyenne<-t.test(liens_region0$Freq~liens_region0$meme_region)
+#Ajouter la p-value
+pvalue2<-round(test_moyenne$p.value,4)
 
 #Créer graphique et pdf
 #ouvrir pdf
 pdf("graph_region.pdf",width = 6,height = 6) 
 # 2. créer graph
 plot(jitter(liens_region0$meme_region),liens_region0$Freq,xlab = 'Région de naissance identique ou pas',ylab = 'Fréquence des liens')
-legend('topright',legend = 'P-value= 0,0257')
+legend('topright',legend = paste('P-value=',pvalue2))
 ablineclip(test_moyenne$estimate[1],-(test_moyenne$estimate[1]-test_moyenne$estimate[2]),x1=0,x2=1)
 # fermer pdf
 dev.off()
